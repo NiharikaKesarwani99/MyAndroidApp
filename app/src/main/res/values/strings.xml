@@ -31,4 +31,5 @@
     <string name="Image1" tools:ignore="Typos">Image1</string>
     <string name="image4">image4</string>
     <string name="image5">image5</string>
+    <string name="poster">poster</string>
 </resources>
