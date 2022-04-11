@@ -57,8 +57,6 @@ class MainActivity : AppCompatActivity() {
         popularMoviesAdapter = MoviesAdapter(mutableListOf()) { movie -> showMovieDetails(movie) }
         popularMovies.adapter = popularMoviesAdapter
 
-        getPopularMovies()
-
         topRatedMovies = findViewById(R.id.top_rated_movies)
         topRatedMoviesLayoutMgr = LinearLayoutManager(
             this,
@@ -68,9 +66,6 @@ class MainActivity : AppCompatActivity() {
         topRatedMovies.layoutManager = topRatedMoviesLayoutMgr
         topRatedMoviesAdapter = MoviesAdapter(mutableListOf()) { movie -> showMovieDetails(movie) }
         topRatedMovies.adapter = topRatedMoviesAdapter
-
-        getPopularMovies()
-        getTopRatedMovies()
 
         upcomingMovies = findViewById(R.id.upcoming_movies)
         upcomingMoviesLayoutMgr = LinearLayoutManager(
