@@ -43,6 +43,12 @@ class MainActivity : AppCompatActivity() {
 
     private var upcomingMoviesPage = 1
 
+    private lateinit var nowPlayingMovies: RecyclerView
+    private lateinit var nowPlayingMoviesAdapter: MoviesAdapter
+    private lateinit var nowPlayingMoviesLayoutMgr: LinearLayoutManager
+
+    private var nowPlayingMoviesPage = 1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -77,9 +83,20 @@ class MainActivity : AppCompatActivity() {
         upcomingMoviesAdapter = MoviesAdapter(mutableListOf()) { movie -> showMovieDetails(movie) }
         upcomingMovies.adapter = upcomingMoviesAdapter
 
+        nowPlayingMovies = findViewById(R.id.now_playing_movies)
+        nowPlayingMoviesLayoutMgr = LinearLayoutManager(
+            this,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        nowPlayingMovies.layoutManager = nowPlayingMoviesLayoutMgr
+        nowPlayingMoviesAdapter = MoviesAdapter(mutableListOf()) { movie -> showMovieDetails(movie) }
+        nowPlayingMovies.adapter = nowPlayingMoviesAdapter
+
         getPopularMovies()
         getTopRatedMovies()
         getUpcomingMovies()
+        getNowPlayingMovies()
     }
 
     private fun getPopularMovies() {
@@ -171,6 +188,35 @@ class MainActivity : AppCompatActivity() {
     private fun onUpcomingMoviesFetched(movies: List<Movie>) {
         upcomingMoviesAdapter.appendMovies(movies)
         attachUpcomingMoviesOnScrollListener()
+    }
+
+    private fun getNowPlayingMovies() {
+        MoviesRepository.getNowPlayingMovies(
+            nowPlayingMoviesPage,
+            ::onNowPlayingMoviesFetched,
+            ::onError
+        )
+    }
+
+    private fun attachNowPlayingMoviesOnScrollListener() {
+        nowPlayingMovies.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val totalItemCount = nowPlayingMoviesLayoutMgr.itemCount
+                val visibleItemCount = nowPlayingMoviesLayoutMgr.childCount
+                val firstVisibleItem = nowPlayingMoviesLayoutMgr.findFirstVisibleItemPosition()
+
+                if (firstVisibleItem + visibleItemCount >= totalItemCount / 2) {
+                    nowPlayingMovies.removeOnScrollListener(this)
+                    nowPlayingMoviesPage++
+                    getNowPlayingMovies()
+                }
+            }
+        })
+    }
+
+    private fun onNowPlayingMoviesFetched(movies: List<Movie>) {
+        nowPlayingMoviesAdapter.appendMovies(movies)
+        attachNowPlayingMoviesOnScrollListener()
     }
 
     private fun showMovieDetails(movie: Movie) {

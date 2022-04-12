@@ -33,4 +33,6 @@
     <string name="image5">image5</string>
     <string name="poster">poster</string>
     <string name="image">image</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="now_playing_movies">Check the now playing movies</string>
 </resources>
